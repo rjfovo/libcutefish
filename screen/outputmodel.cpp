@@ -223,10 +223,11 @@ void OutputModel::add(const KScreen::OutputPtr &output)
     }
     m_outputs.insert(i, Output(output, pos));
 
-    connect(output.data(), &KScreen::Output::isPrimaryChanged,
-            this, [this, output](){
-        roleChanged(output->id(), PrimaryRole);
-    });
+    // rjfovo-TODO: qt信号找不到
+    //connect(output.data(), &KScreen::Output::isPrimaryChanged,
+    //        this, [this, output](){
+    //    roleChanged(output->id(), PrimaryRole);
+    //});
     Q_EMIT endInsertRows();
 
     // Update replications.

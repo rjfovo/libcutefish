@@ -65,7 +65,8 @@ void ConfigHandler::setConfig(KScreen::ConfigPtr config)
     connect(m_config.data(), &KScreen::Config::outputRemoved, this, [this]() {
         Q_EMIT outputConnect(false);
     });
-    connect(m_config.data(), &KScreen::Config::primaryOutputChanged, this, &ConfigHandler::primaryOutputChanged);
+    // rjfovo-TODO: 相关槽函数不存在
+    // connect(m_config.data(), &KScreen::Config::primaryOutputChanged, this, &ConfigHandler::primaryOutputChanged);
 
     Q_EMIT outputModelChanged();
 }
