@@ -1,4 +1,7 @@
-set(bluezqtextensionplugin_SRCS
+cmake_minimum_required(VERSION 3.16)
+project(cutefishbluez LANGUAGES CXX)
+
+set(BLUEZQTEXTENSIONPLUGIN_SRCS
     declarativemanager.cpp
     declarativeadapter.cpp
     # declarativebattery.cpp
@@ -12,17 +15,51 @@ set(bluezqtextensionplugin_SRCS
     applet/bluetoothmanager.cpp
 )
 
-add_library(cutefishbluez_qmlplugins SHARED ${bluezqtextensionplugin_SRCS})
-
-find_package(KF5BluezQt REQUIRED)
-
-target_link_libraries(cutefishbluez_qmlplugins
-    Qt5::Core
-    Qt5::Qml
-    Qt5::DBus
-    KF5::BluezQt
+# ----------------------------
+# Qt6 模块
+# ----------------------------
+find_package(Qt6 REQUIRED COMPONENTS
+    Core
+    Qml
+    DBus
+    Quick
 )
 
-install(TARGETS cutefishbluez_qmlplugins DESTINATION ${INSTALL_QMLDIR}/Cutefish/Bluez)
-install(FILES DevicesModel.qml DESTINATION ${INSTALL_QMLDIR}/Cutefish/Bluez)
-install(FILES qmldir DESTINATION ${INSTALL_QMLDIR}/Cutefish/Bluez)
+# ----------------------------
+# KF6 BluezQt
+# ----------------------------
+find_package(KF6BluezQt REQUIRED)
+
+# ----------------------------
+# QML 文件
+# ----------------------------
+set(QML_FILES
+    DevicesModel.qml
+)
+
+# ----------------------------
+# 创建 QML 模块
+# ----------------------------
+qt6_add_qml_module(cutefishbluez_qmlplugins
+    URI Cutefish.Bluez
+    VERSION 1.0
+    OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Cutefish/Bluez
+    SOURCES ${BLUEZQTEXTENSIONPLUGIN_SRCS}
+    QML_FILES ${QML_FILES}
+)
+
+# ----------------------------
+# 链接库
+# ----------------------------
+target_link_libraries(cutefishbluez_qmlplugins PRIVATE 
+    Qt6::Core
+    Qt6::Qml
+    Qt6::DBus
+    KF6::BluezQt
+)
+
+# ----------------------------
+# 安装
+# ----------------------------
+# qt6_add_qml_module 会自动生成 qmldir 并安装到 QT6_INSTALL_QMLDIR
+# 不再需要手动 install()

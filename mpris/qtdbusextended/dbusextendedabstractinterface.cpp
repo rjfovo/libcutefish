@@ -153,7 +153,7 @@ QVariant DBusExtendedAbstractInterface::internalPropGet(const char *propname, vo
     if (m_useCache) {
         int propertyIndex = metaObject()->indexOfProperty(propname);
         QMetaProperty metaProperty = metaObject()->property(propertyIndex);
-        return QVariant(metaProperty.type(), propertyPtr);
+        return QVariant(QMetaType(metaProperty.userType()), propertyPtr);  // 修改：使用 QMetaType 构造函数
     }
 
     if (m_sync) {
@@ -188,8 +188,9 @@ QVariant DBusExtendedAbstractInterface::internalPropGet(const char *propname, vo
 
         // is this metatype registered?
         const char *expectedSignature = "";
-        if (int(metaProperty.type()) != QMetaType::QVariant) {
-            expectedSignature = QDBusMetaType::typeToSignature(metaProperty.userType());
+        QMetaType metaType(metaProperty.userType());  // 修改：创建 QMetaType 对象
+        if (metaType.id() != QMetaType::QVariant) {
+            expectedSignature = QDBusMetaType::typeToSignature(metaType);  // 修改：传递 QMetaType 而不是 int
             if (0 == expectedSignature) {
                 QString errorMessage =
                     QStringLiteral("Type %1 must be registered with Qt D-Bus "
@@ -205,7 +206,7 @@ QVariant DBusExtendedAbstractInterface::internalPropGet(const char *propname, vo
         }
 
         asyncProperty(propname);
-        return QVariant(metaProperty.type(), propertyPtr);
+        return QVariant(metaType, propertyPtr);  // 修改：使用 QMetaType 构造函数
     }
 }
 
@@ -243,7 +244,8 @@ void DBusExtendedAbstractInterface::internalPropSet(const char *propname, const 
             return;
         }
 
-        asyncSetProperty(propname, QVariant(metaProperty.type(), propertyPtr));
+        QMetaType metaType(metaProperty.userType());  // 修改：创建 QMetaType 对象
+        asyncSetProperty(propname, QVariant(metaType, propertyPtr));  // 修改：使用 QMetaType 构造函数
     }
 }
 
@@ -385,16 +387,17 @@ QVariant DBusExtendedAbstractInterface::demarshall(const QString &interface, con
         return value;
     }
 
-    QVariant result = QVariant(metaProperty.userType(), (void*)0);
+    QMetaType metaType(metaProperty.userType());  // 修改：创建 QMetaType 对象
+    QVariant result(metaType);  // 修改：使用 QMetaType 构造函数
     QString errorMessage;
-    const char *expectedSignature = QDBusMetaType::typeToSignature(metaProperty.userType());
+    const char *expectedSignature = QDBusMetaType::typeToSignature(metaType);  // 修改：传递 QMetaType 而不是 int
 
     if (value.userType() == qMetaTypeId<QDBusArgument>()) {
         // demarshalling a DBus argument ...
         QDBusArgument dbusArg = value.value<QDBusArgument>();
 
         if (expectedSignature == dbusArg.currentSignature().toLatin1()) {
-            QDBusMetaType::demarshall(dbusArg, metaProperty.userType(), result.data());
+            QDBusMetaType::demarshall(dbusArg, metaType, result.data());  // 修改：传递 QMetaType 而不是 int
             if (!result.isValid()) {
                 errorMessage = QStringLiteral("Unexpected failure demarshalling "
                                               "upon PropertiesChanged signal arrival "
@@ -415,7 +418,8 @@ QVariant DBusExtendedAbstractInterface::demarshall(const QString &interface, con
                          QString::fromLatin1(expectedSignature));
         }
     } else {
-        const char *actualSignature = QDBusMetaType::typeToSignature(value.userType());
+        QMetaType valueMetaType(value.userType());  // 修改：创建 QMetaType 对象
+        const char *actualSignature = QDBusMetaType::typeToSignature(valueMetaType);  // 修改：传递 QMetaType 而不是 int
 
         errorMessage = QStringLiteral("Unexpected `%1' (%2) "
                                       "upon PropertiesChanged signal arrival "

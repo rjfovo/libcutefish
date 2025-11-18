@@ -24,11 +24,9 @@
 
 
 #include "mpriscontroller_p.h"
-
 #include "mpris.h"
 
 #include <QtCore/QtDebug>
-
 
 /*
  * Implementation of interface class MprisPlayerInterface
@@ -42,10 +40,10 @@ MprisPlayerInterface::MprisPlayerInterface(const QString &service, const QString
     , m_canPause(false)
     , m_canPlay(false)
     , m_canSeek(false)
-    , m_loopStatus(Mpris::None)
+    , m_loopStatus(QString())  // 修改：使用空字符串初始化
     , m_maximumRate(1)
     , m_minimumRate(1)
-    , m_playbackStatus(Mpris::Stopped)
+    , m_playbackStatus(QString())  // 修改：使用空字符串初始化
     , m_position(0)
     , m_rate(1)
     , m_shuffle(false)
@@ -103,7 +101,7 @@ void MprisPlayerInterface::onPropertyChanged(const QString &propertyName, const 
             Q_EMIT loopStatusChanged(m_loopStatus);
         }
     } else if (propertyName == QStringLiteral("MaximumRate")) {
-        bool maximumRate = value.toDouble();
+        double maximumRate = value.toDouble();  // 修正：改为double类型
         if (m_maximumRate != maximumRate) {
             m_maximumRate = maximumRate;
             Q_EMIT maximumRateChanged(m_maximumRate);
@@ -156,4 +154,3 @@ void MprisPlayerInterface::onPropertyChanged(const QString &propertyName, const 
                    << propertyName;
     }
 }
-

@@ -11,6 +11,7 @@
 #include <QFile>
 #include <QStandardPaths>
 #include <QXmlStreamReader>
+#include <QRandomGenerator>  // 添加这个头文件
 
 #include <BluezQt/Device>
 #include <QDebug>
@@ -29,21 +30,13 @@ static int cRandom()
         QFile urandom(QStringLiteral("/dev/urandom"));
         bool opened = urandom.open(QIODevice::ReadOnly | QIODevice::Unbuffered);
         if (!opened || urandom.read(reinterpret_cast<char *>(&seed), sizeof(seed)) != sizeof(seed)) {
-            // silence warnings about use of deprecated qsrand()/qrand()
-            // Porting to QRandomGenerator::global() instead might result in no new seed set for the generator behind qrand()
-            // which then might affect other places indirectly relying on this.
-            // So just keeping the old calls here, as this method is also deprecated and will disappear together with qsrand/qrand.
-            QT_WARNING_PUSH
-            QT_WARNING_DISABLE_CLANG("-Wdeprecated-declarations")
-            QT_WARNING_DISABLE_GCC("-Wdeprecated-declarations")
-            // No /dev/urandom... try something else.
-            qsrand(getpid());
-            seed = qrand() ^ time(nullptr) ^ reinterpret_cast<quintptr>(QThread::currentThread());
+            // 使用 QRandomGenerator 替代已弃用的 qsrand/qrand
+            seed = QRandomGenerator::global()->generate() ^ static_cast<unsigned int>(time(nullptr)) ^ reinterpret_cast<quintptr>(QThread::currentThread());
         }
-        qsrand(seed);
+        // 在Qt6中不需要显式设置种子，QRandomGenerator会自动处理
     }
-    return qrand();
-    QT_WARNING_POP
+    // 使用 QRandomGenerator 生成随机数
+    return QRandomGenerator::global()->generate();
 }
 
 BluetoothAgent::BluetoothAgent(QObject *parent)
@@ -71,7 +64,8 @@ bool BluetoothAgent::isFromDatabase()
 QString BluetoothAgent::getPin(BluezQt::DevicePtr device)
 {
     m_fromDatabase = false;
-    m_pin = QString::number(cRandom());
+    // 使用 QRandomGenerator 生成随机PIN码
+    m_pin = QString::number(QRandomGenerator::global()->generate());
     m_pin = m_pin.left(6);
 
     const QString &xmlPath = QStandardPaths::locate(QStandardPaths::AppDataLocation, QStringLiteral("pin-code-database.xml"));
@@ -122,8 +116,10 @@ QString BluetoothAgent::getPin(BluezQt::DevicePtr device)
         m_fromDatabase = true;
         if (m_pin.startsWith(QLatin1String("max:"))) {
             m_fromDatabase = false;
-            int num = m_pin.rightRef(m_pin.length() - 4).toInt();
-            m_pin = QString::number(cRandom()).left(num);
+            // 使用 right() 替代已弃用的 rightRef()
+            int num = m_pin.right(m_pin.length() - 4).toInt();
+            // 使用 QRandomGenerator 生成随机数
+            m_pin = QString::number(QRandomGenerator::global()->generate()).left(num);
         }
 
         qDebug() << "PIN: " << m_pin;

@@ -31,6 +31,7 @@
 
 #include <QDBusConnection>
 #include <QDBusConnectionInterface>
+#include <QRegularExpression>  // 添加这个头文件
 
 #include <QtCore/QSignalMapper>
 
@@ -69,9 +70,9 @@ MprisManager::MprisManager(QObject *parent)
     QStringList serviceNames = connection.interface()->registeredServiceNames();
     QStringList::const_iterator i = serviceNames.constBegin();
     while (i != serviceNames.constEnd()) {
-        QRegExp rx(mprisNameSpace);
-        rx.setPatternSyntax(QRegExp::Wildcard);
-        if (rx.exactMatch(*i)) {
+        // 使用 QRegularExpression 替代 QRegExp
+        QRegularExpression rx(QRegularExpression::wildcardToRegularExpression(mprisNameSpace));
+        if (rx.match(*i).hasMatch()) {
             onServiceAppeared(*i);
         }
 
@@ -174,9 +175,9 @@ void MprisManager::setCurrentService(const QString &service)
         return;
     }
 
-    QRegExp rx(mprisNameSpace);
-    rx.setPatternSyntax(QRegExp::Wildcard);
-    if (!rx.exactMatch(service)) {
+    // 使用 QRegularExpression 替代 QRegExp
+    QRegularExpression rx(QRegularExpression::wildcardToRegularExpression(mprisNameSpace));
+    if (!rx.match(service).hasMatch()) {
         qmlInfo(this) << service << "is not a proper Mpris2 service";
         return;
     }
@@ -375,15 +376,9 @@ void MprisManager::setVolume(double volume)
 
 void MprisManager::onNameOwnerChanged(const QString &service, const QString &oldOwner, const QString &newOwner)
 {
-    // Unfortunately, QDBus doesn't allow flexible signal watchers.
-    // Would it allow them, we could pass the filter "arg0namespace='org.mpris.MediaPlayer2'"
-    // Therefore, we will receive here all the name changes in the
-    // bus, not just the ones for our name space of interest, and we
-    // will have to filter on our own :(
-
-    QRegExp rx(mprisNameSpace);
-    rx.setPatternSyntax(QRegExp::Wildcard);
-    if (!rx.exactMatch(service)) {
+    // 使用 QRegularExpression 替代 QRegExp
+    QRegularExpression rx(QRegularExpression::wildcardToRegularExpression(mprisNameSpace));
+    if (!rx.match(service).hasMatch()) {
         return;
     }
 
