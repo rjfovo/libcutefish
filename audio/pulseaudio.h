@@ -11,6 +11,7 @@
 #include <QAbstractListModel>
 
 #include "maps.h"
+#include "sink.h"
 
 namespace QPulseAudio
 {

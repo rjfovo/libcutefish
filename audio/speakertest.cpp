@@ -8,6 +8,7 @@
 #include "speakertest.h"
 
 #include "canberracontext.h"
+#include "sink.h"
 
 QPulseAudio::Sink *SpeakerTest::sink() const
 {

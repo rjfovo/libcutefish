@@ -3,7 +3,7 @@
 
 #include <QAbstractItemModel>
 #include <QJSValue>
-#include <QRegExp>
+#include <QRegularExpression>  // 替换 QRegExp
 #include <QSortFilterProxyModel>
 #include <QVector>
 
@@ -16,9 +16,9 @@ class SortFilterModel : public QSortFilterProxyModel
     Q_PROPERTY(QAbstractItemModel *sourceModel READ sourceModel WRITE setModel NOTIFY sourceModelChanged)
 
     /**
-     * The regular expression for the filter, only items with their filterRole matching filterRegExp will be displayed
+     * The regular expression for the filter, only items with their filterRole matching filterRegularExpression will be displayed
      */
-    Q_PROPERTY(QString filterRegExp READ filterRegExp WRITE setFilterRegExp NOTIFY filterRegExpChanged)
+    Q_PROPERTY(QString filterRegularExpression READ filterRegularExpression WRITE setFilterRegularExpression NOTIFY filterRegularExpressionChanged)
 
     /**
      * The string for the filter, only items with their filterRole matching filterString will be displayed
@@ -29,14 +29,14 @@ class SortFilterModel : public QSortFilterProxyModel
      * A JavaScript callable that is passed the source model row index as first argument and the value
      * of filterRole as second argument. The callable's return value is evaluated as boolean to determine
      * whether the row is accepted (true) or filtered out (false). It overrides the default implementation
-     * that uses filterRegExp or filterString; while filterCallable is set those two properties are
+     * that uses filterRegularExpression or filterString; while filterCallable is set those two properties are
      * ignored. Attempts to write a non-callable to this property are silently ignored, but you can set
      * it to null.
      */
     Q_PROPERTY(QJSValue filterCallback READ filterCallback WRITE setFilterCallback NOTIFY filterCallbackChanged REVISION 1)
 
     /**
-     * The role of the sourceModel on which filterRegExp must be applied.
+     * The role of the sourceModel on which filterRegularExpression must be applied.
      */
     Q_PROPERTY(QString filterRole READ filterRole WRITE setFilterRole)
 
@@ -68,8 +68,13 @@ public:
 
     void setModel(QAbstractItemModel *source);
 
-    void setFilterRegExp(const QString &exp);
-    QString filterRegExp() const;
+    // 更新 API 名称以匹配 Qt6
+    void setFilterRegularExpression(const QString &pattern);
+    QString filterRegularExpression() const;
+
+    // 保持向后兼容的别名
+    void setFilterRegExp(const QString &pattern) { setFilterRegularExpression(pattern); }
+    QString filterRegExp() const { return filterRegularExpression(); }
 
     void setFilterString(const QString &filterString);
     QString filterString() const;
@@ -109,7 +114,8 @@ Q_SIGNALS:
     void countChanged();
     void sortColumnChanged();
     void sourceModelChanged(QObject *);
-    void filterRegExpChanged(const QString &);
+    void filterRegularExpressionChanged(const QString &);
+    void filterRegExpChanged(const QString &pattern);  // 只声明，不实现
     Q_REVISION(1) void filterStringChanged(const QString &);
     Q_REVISION(1) void filterCallbackChanged(const QJSValue &);
 
@@ -127,6 +133,7 @@ private:
     QString m_filterString;
     QJSValue m_filterCallback;
     QHash<QString, int> m_roleIds;
+    QRegularExpression m_filterRegex;  // 使用 QRegularExpression 替代 QRegExp
 };
 
 #endif

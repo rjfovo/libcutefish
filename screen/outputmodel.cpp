@@ -22,6 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "confighandler.h"
 
 #include <QRect>
+#include <KScreen/Mode>  // 添加这行来包含 KScreen::Mode 的完整定义
 
 OutputModel::OutputModel(ConfigHandler *configHandler)
     : QAbstractListModel(configHandler)

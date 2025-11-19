@@ -13,6 +13,7 @@
 
 #include <pulse/ext-stream-restore.h>
 #include <pulse/pulseaudio.h>
+#include "sink.h"
 
 namespace QPulseAudio
 {
