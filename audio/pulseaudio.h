@@ -12,6 +12,7 @@
 
 #include "maps.h"
 #include "sink.h"
+#include "source.h"
 
 namespace QPulseAudio
 {

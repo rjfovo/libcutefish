@@ -1,101 +1,61 @@
 #include "sortfiltermodel.h"
-
 #include <QQmlContext>
 #include <QQmlEngine>
+#include <QDebug>
 
 SortFilterModel::SortFilterModel(QObject *parent)
     : QSortFilterProxyModel(parent)
 {
-    setObjectName(QStringLiteral("SortFilterModel"));
     setDynamicSortFilter(true);
     connect(this, &QAbstractItemModel::rowsInserted, this, &SortFilterModel::countChanged);
     connect(this, &QAbstractItemModel::rowsRemoved, this, &SortFilterModel::countChanged);
     connect(this, &QAbstractItemModel::modelReset, this, &SortFilterModel::countChanged);
-    connect(this, &SortFilterModel::countChanged, this, &SortFilterModel::syncRoleNames);
 }
 
 SortFilterModel::~SortFilterModel()
 {
 }
 
-void SortFilterModel::syncRoleNames()
+QAbstractItemModel *SortFilterModel::sourceModel() const
 {
-    if (!sourceModel()) {
+    return QSortFilterProxyModel::sourceModel();
+}
+
+void SortFilterModel::setModel(QAbstractItemModel *source)
+{
+    if (source == QSortFilterProxyModel::sourceModel()) {
         return;
     }
 
-    m_roleIds.clear();
-    const QHash<int, QByteArray> rNames = roleNames();
-    m_roleIds.reserve(rNames.count());
-    for (auto i = rNames.constBegin(); i != rNames.constEnd(); ++i) {
-        m_roleIds[QString::fromUtf8(i.value())] = i.key();
+    if (QSortFilterProxyModel::sourceModel()) {
+        disconnect(QSortFilterProxyModel::sourceModel(), &QAbstractItemModel::modelReset, this, &SortFilterModel::syncRoleNames);
     }
 
-    setFilterRole(m_filterRole);
-    setSortRole(m_sortRole);
-}
+    QSortFilterProxyModel::setSourceModel(source);
 
-QHash<int, QByteArray> SortFilterModel::roleNames() const
-{
-    if (sourceModel()) {
-        return sourceModel()->roleNames();
-    }
-    return {};
-}
-
-int SortFilterModel::roleNameToId(const QString &name) const
-{
-    return m_roleIds.value(name, Qt::DisplayRole);
-}
-
-void SortFilterModel::setModel(QAbstractItemModel *model)
-{
-    if (model == sourceModel()) {
-        return;
-    }
-
-    if (sourceModel()) {
-        disconnect(sourceModel(), &QAbstractItemModel::modelReset, this, &SortFilterModel::syncRoleNames);
-    }
-
-    QSortFilterProxyModel::setSourceModel(model);
-
-    if (model) {
-        connect(model, &QAbstractItemModel::modelReset, this, &SortFilterModel::syncRoleNames);
+    if (source) {
+        connect(source, &QAbstractItemModel::modelReset, this, &SortFilterModel::syncRoleNames);
         syncRoleNames();
     }
 
-    Q_EMIT sourceModelChanged(model);
+    Q_EMIT sourceModelChanged(source);
 }
 
-bool SortFilterModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
+void SortFilterModel::setFilterRegularExpression(const QString &pattern)
 {
-    if (m_filterCallback.isCallable()) {
-        QJSValueList args;
-        args << QJSValue(source_row);
-
-        const QModelIndex idx = sourceModel()->index(source_row, filterKeyColumn(), source_parent);
-        QQmlEngine *engine = QQmlEngine::contextForObject(this)->engine();
-        args << engine->toScriptValue<QVariant>(idx.data(m_roleIds.value(m_filterRole)));
-
-        return const_cast<SortFilterModel *>(this)->m_filterCallback.call(args).toBool();
-    }
-
-    return QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
-}
-
-void SortFilterModel::setFilterRegExp(const QString &exp)
-{
-    if (exp == filterRegExp()) {
+    if (pattern == filterRegularExpression()) {
         return;
     }
-    QSortFilterProxyModel::setFilterRegExp(QRegExp(exp, Qt::CaseInsensitive));
-    Q_EMIT filterRegExpChanged(exp);
+    
+    m_filterRegex.setPattern(pattern);
+    m_filterRegex.setPatternOptions(QRegularExpression::CaseInsensitiveOption);
+    QSortFilterProxyModel::setFilterRegularExpression(m_filterRegex);
+    Q_EMIT filterRegularExpressionChanged(pattern);
 }
 
-QString SortFilterModel::filterRegExp() const
+QString SortFilterModel::filterRegularExpression() const
 {
-    return QSortFilterProxyModel::filterRegExp().pattern();
+    return QSortFilterProxyModel::filterRegularExpression().pattern();
 }
 
 void SortFilterModel::setFilterString(const QString &filterString)
@@ -130,14 +90,17 @@ void SortFilterModel::setFilterCallback(const QJSValue &callback)
 
     m_filterCallback = callback;
     invalidateFilter();
-
     Q_EMIT filterCallbackChanged(callback);
 }
 
 void SortFilterModel::setFilterRole(const QString &role)
 {
-    QSortFilterProxyModel::setFilterRole(roleNameToId(role));
+    if (role == m_filterRole) {
+        return;
+    }
     m_filterRole = role;
+    QSortFilterProxyModel::setFilterRole(roleNameToId(role));
+    Q_EMIT filterRoleChanged(role);
 }
 
 QString SortFilterModel::filterRole() const
@@ -147,6 +110,9 @@ QString SortFilterModel::filterRole() const
 
 void SortFilterModel::setSortRole(const QString &role)
 {
+    if (role == m_sortRole) {
+        return;
+    }
     m_sortRole = role;
     if (role.isEmpty()) {
         sort(-1, Qt::AscendingOrder);
@@ -154,6 +120,7 @@ void SortFilterModel::setSortRole(const QString &role)
         QSortFilterProxyModel::setSortRole(roleNameToId(role));
         sort(sortColumn(), sortOrder());
     }
+    Q_EMIT sortRoleChanged(role);
 }
 
 QString SortFilterModel::sortRole() const
@@ -161,12 +128,23 @@ QString SortFilterModel::sortRole() const
     return m_sortRole;
 }
 
-void SortFilterModel::setSortOrder(const Qt::SortOrder order)
+Qt::SortOrder SortFilterModel::sortOrder() const
+{
+    return QSortFilterProxyModel::sortOrder();
+}
+
+void SortFilterModel::setSortOrder(Qt::SortOrder order)
 {
     if (order == sortOrder()) {
         return;
     }
     sort(sortColumn(), order);
+    Q_EMIT sortOrderChanged();
+}
+
+int SortFilterModel::sortColumn() const
+{
+    return QSortFilterProxyModel::sortColumn();
 }
 
 void SortFilterModel::setSortColumn(int column)
@@ -205,4 +183,55 @@ int SortFilterModel::mapRowFromSource(int row) const
     }
     QModelIndex idx = sourceModel()->index(row, 0);
     return mapFromSource(idx).row();
+}
+
+bool SortFilterModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
+{
+    if (m_filterCallback.isCallable()) {
+        QJSValueList args;
+        args << QJSValue(source_row);
+
+        const QModelIndex idx = sourceModel()->index(source_row, filterKeyColumn(), source_parent);
+        QQmlEngine *engine = QQmlEngine::contextForObject(this)->engine();
+        args << engine->toScriptValue<QVariant>(idx.data(roleNameToId(m_filterRole)));
+
+        return const_cast<SortFilterModel *>(this)->m_filterCallback.call(args).toBool();
+    }
+
+    return QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
+}
+
+QHash<int, QByteArray> SortFilterModel::roleNames() const
+{
+    if (sourceModel()) {
+        return sourceModel()->roleNames();
+    }
+    return {};
+}
+
+void SortFilterModel::syncRoleNames()
+{
+    if (!sourceModel()) {
+        return;
+    }
+
+    m_roleIds.clear();
+    const QHash<int, QByteArray> rNames = roleNames();
+    m_roleIds.reserve(rNames.count());
+    for (auto i = rNames.constBegin(); i != rNames.constEnd(); ++i) {
+        m_roleIds[QString::fromUtf8(i.value())] = i.key();
+    }
+
+    // 更新过滤和排序角色
+    if (!m_filterRole.isEmpty()) {
+        QSortFilterProxyModel::setFilterRole(roleNameToId(m_filterRole));
+    }
+    if (!m_sortRole.isEmpty()) {
+        QSortFilterProxyModel::setSortRole(roleNameToId(m_sortRole));
+    }
+}
+
+int SortFilterModel::roleNameToId(const QString &name) const
+{
+    return m_roleIds.value(name, -1);
 }

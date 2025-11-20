@@ -9,6 +9,7 @@
 #include <QObject>
 #include <QPointer>
 #include <QQmlParserStatus>
+#include <QQuickItem>
 
 class QAbstractItemModel;
 class QMenu;

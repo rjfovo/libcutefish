@@ -10,6 +10,7 @@
 #include "debug.h"
 #include <QMap>
 #include <QObject>
+#include <QQuickItem>
 
 #include <pulse/ext-stream-restore.h>
 #include <pulse/pulseaudio.h>

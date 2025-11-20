@@ -8,6 +8,7 @@
 
 #include <QAbstractItemModel>
 #include <QMenu>
+#include <QActionGroup>  // 添加 QActionGroup 头文件
 #include <QQuickItem>
 #include <QQuickWindow>
 #include <QWindow>
