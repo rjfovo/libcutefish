@@ -24,5 +24,5 @@ Package: libcutefish
 Architecture: any
 Depends: ${misc:Depends},
          ${shlibs:Depends},
-         libkf6screen-bin
+         libkscreen-bin
 Description: CutefishOS Library
