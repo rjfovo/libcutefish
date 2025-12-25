@@ -102,7 +102,7 @@ pkg_check_modules(LIBPULSE_MAINLOOP libpulse-mainloop-glib REQUIRED IMPORTED_TAR
 qt6_add_qml_module(cutefishaudio_qmlplugins
     URI Cutefish.Audio
     VERSION 1.0
-    OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Cutefish/Audio
+    OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/cutefish/Audio
     QML_FILES ${QML_FILES}
     SOURCES ${AUDIO_SRCS}
 )

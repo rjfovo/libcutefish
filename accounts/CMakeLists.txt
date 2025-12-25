@@ -40,7 +40,7 @@ qt6_add_dbus_interface(
 qt6_add_qml_module(cutefishaccounts_qmlplugins
     URI Cutefish.Accounts
     VERSION 1.0
-    OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Cutefish/Accounts
+    OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/cutefish/Accounts
     QML_FILES
         # 如果有 QML 文件放这里，否则保持空
     SOURCES

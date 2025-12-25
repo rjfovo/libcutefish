@@ -43,7 +43,7 @@ set(QML_FILES
 qt6_add_qml_module(cutefishbluez_qmlplugins
     URI Cutefish.Bluez
     VERSION 1.0
-    OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Cutefish/Bluez
+    OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/cutefish/Bluez
     SOURCES ${BLUEZQTEXTENSIONPLUGIN_SRCS}
     QML_FILES ${QML_FILES}
 )

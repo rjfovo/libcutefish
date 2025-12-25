@@ -39,7 +39,7 @@ find_package(KF6KIO REQUIRED)
 qt6_add_qml_module(cutefishscreen_qmlplugins
     URI Cutefish.Screen
     VERSION 1.0
-    OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Cutefish/Screen
+    OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/cutefish/Screen
     SOURCES ${SCREEN_SRCS}
     # 如果有 QML 文件，可在 QML_FILES 添加
     QML_FILES

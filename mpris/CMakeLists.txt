@@ -52,7 +52,7 @@ set(QML_FILES
 qt6_add_qml_module(cutefishmpris_qmlplugins
     URI Cutefish.Mpris
     VERSION 1.0
-    OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Cutefish/Mpris
+    OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/cutefish/Mpris
     SOURCES ${NETWORKMGR_SRCS}
     QML_FILES ${QML_FILES}
 )
