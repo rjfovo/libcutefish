@@ -8,6 +8,7 @@ set(SYSTEM_SRCS
     wallpaper.cpp
     wallpaper.h
     plugin.cpp
+    qml_register.cpp
 )
 
 # ----------------------------
@@ -24,9 +25,8 @@ find_package(Qt6 REQUIRED COMPONENTS
 # 创建 QML 模块
 # ----------------------------
 qt6_add_qml_module(cutefishsystem_qmlplugins
-    URI Cutefish.System
+    URI cutefish.system
     VERSION 1.0
-    OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/cutefish/System
     SOURCES ${SYSTEM_SRCS}
     # 如果有 QML 文件，可在 QML_FILES 添加
     QML_FILES
@@ -40,6 +40,13 @@ target_link_libraries(cutefishsystem_qmlplugins PRIVATE
     Qt6::Quick
     Qt6::Gui
     Qt6::DBus
+)
+
+# 设置rpath，确保插件库能找到安装的库
+set_target_properties(cutefishsystem_qmlplugins PROPERTIES
+    INSTALL_RPATH "$ORIGIN/../../.."
+    BUILD_WITH_INSTALL_RPATH TRUE
+    SKIP_BUILD_RPATH FALSE
 )
 
 # ----------------------------

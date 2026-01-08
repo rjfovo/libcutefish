@@ -3,10 +3,12 @@
 
 #include <QObject>
 #include <QDBusInterface>
+#include <QtQml/qqmlregistration.h>
 
 class Wallpaper : public QObject
 {
     Q_OBJECT
+    QML_ELEMENT
     Q_PROPERTY(int type READ type NOTIFY typeChanged)
     Q_PROPERTY(QString path READ path NOTIFY pathChanged)
     Q_PROPERTY(bool dimsWallpaper READ dimsWallpaper NOTIFY dimsWallpaperChanged)

@@ -52,7 +52,7 @@ set(QML_FILES
 qt6_add_qml_module(cutefishmpris_qmlplugins
     URI Cutefish.Mpris
     VERSION 1.0
-    OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/cutefish/Mpris
+    OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Cutefish/Mpris
     SOURCES ${NETWORKMGR_SRCS}
     QML_FILES ${QML_FILES}
 )
@@ -65,6 +65,13 @@ target_link_libraries(cutefishmpris_qmlplugins PRIVATE
     Qt6::Quick
     Qt6::Gui
     Qt6::DBus
+)
+
+# 设置rpath，确保插件库能找到安装的库
+set_target_properties(cutefishmpris_qmlplugins PROPERTIES
+    INSTALL_RPATH "$ORIGIN/../../.."
+    BUILD_WITH_INSTALL_RPATH TRUE
+    SKIP_BUILD_RPATH FALSE
 )
 
 # ----------------------------

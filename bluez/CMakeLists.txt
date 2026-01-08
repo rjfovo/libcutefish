@@ -43,7 +43,7 @@ set(QML_FILES
 qt6_add_qml_module(cutefishbluez_qmlplugins
     URI Cutefish.Bluez
     VERSION 1.0
-    OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/cutefish/Bluez
+    OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Cutefish/Bluez
     SOURCES ${BLUEZQTEXTENSIONPLUGIN_SRCS}
     QML_FILES ${QML_FILES}
 )
@@ -56,6 +56,13 @@ target_link_libraries(cutefishbluez_qmlplugins PRIVATE
     Qt6::Qml
     Qt6::DBus
     KF6::BluezQt
+)
+
+# 设置rpath，确保插件库能找到安装的库
+set_target_properties(cutefishbluez_qmlplugins PROPERTIES
+    INSTALL_RPATH "$ORIGIN/../../.."
+    BUILD_WITH_INSTALL_RPATH TRUE
+    SKIP_BUILD_RPATH FALSE
 )
 
 # ----------------------------

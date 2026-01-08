@@ -4,30 +4,11 @@
 	dh $@ --parallel
 
 override_dh_auto_configure:
-	dh_auto_configure -- -DEMBED_TRANSLATIONS=ON -DBUILD_TESTING=ON
+	dh_auto_configure -- -DEMBED_TRANSLATIONS=ON -DBUILD_TESTING=ON \
+		-DCMAKE_INSTALL_FULL_LIBDIR=/usr/lib/x86_64-linux-gnu \
+		-DINSTALL_QMLDIR=/usr/lib/x86_64-linux-gnu/qt6/qml
 
 override_dh_auto_install:
 	dh_auto_install --destdir=debian/libcutefish/
-	# 手动安装QML模块文件
-	install -d debian/libcutefish/usr/lib/x86_64-linux-gnu/qt6/qml/
-	cp -r obj-x86_64-linux-gnu/accounts/cutefish debian/libcutefish/usr/lib/x86_64-linux-gnu/qt6/qml/ 2>/dev/null || true
-	cp -r obj-x86_64-linux-gnu/audio/cutefish debian/libcutefish/usr/lib/x86_64-linux-gnu/qt6/qml/ 2>/dev/null || true
-	cp -r obj-x86_64-linux-gnu/bluez/cutefish debian/libcutefish/usr/lib/x86_64-linux-gnu/qt6/qml/ 2>/dev/null || true
-	cp -r obj-x86_64-linux-gnu/mpris/cutefish debian/libcutefish/usr/lib/x86_64-linux-gnu/qt6/qml/ 2>/dev/null || true
-	cp -r obj-x86_64-linux-gnu/networkmanagement/cutefish debian/libcutefish/usr/lib/x86_64-linux-gnu/qt6/qml/ 2>/dev/null || true
-	cp -r obj-x86_64-linux-gnu/screen/cutefish debian/libcutefish/usr/lib/x86_64-linux-gnu/qt6/qml/ 2>/dev/null || true
-	cp -r obj-x86_64-linux-gnu/system/cutefish debian/libcutefish/usr/lib/x86_64-linux-gnu/qt6/qml/ 2>/dev/null || true
-	cp -r obj-x86_64-linux-gnu/cutefish debian/libcutefish/usr/lib/x86_64-linux-gnu/qt6/qml/ 2>/dev/null || true
-	cp -r obj-x86_64-linux-gnu/libcutefish_qmlplugins.so debian/libcutefish/usr/lib/x86_64-linux-gnu/qt6/qml/cutefish 2>/dev/null || true
-
-	# 安装共享库
-	install -d debian/libcutefish/usr/lib/x86_64-linux-gnu/
-	install -m 644 obj-x86_64-linux-gnu/accounts/libcutefishaccounts_qmlplugins.so debian/libcutefish/usr/lib/x86_64-linux-gnu/
-	install -m 644 obj-x86_64-linux-gnu/audio/libcutefishaudio_qmlplugins.so debian/libcutefish/usr/lib/x86_64-linux-gnu/
-	install -m 644 obj-x86_64-linux-gnu/bluez/libcutefishbluez_qmlplugins.so debian/libcutefish/usr/lib/x86_64-linux-gnu/
-	install -m 644 obj-x86_64-linux-gnu/mpris/libcutefishmpris_qmlplugins.so debian/libcutefish/usr/lib/x86_64-linux-gnu/
-	install -m 644 obj-x86_64-linux-gnu/networkmanagement/libcutefishnm_qmlplugins.so debian/libcutefish/usr/lib/x86_64-linux-gnu/
-	install -m 644 obj-x86_64-linux-gnu/screen/libcutefishscreen_qmlplugins.so debian/libcutefish/usr/lib/x86_64-linux-gnu/
-	install -m 644 obj-x86_64-linux-gnu/system/libcutefishsystem_qmlplugins.so debian/libcutefish/usr/lib/x86_64-linux-gnu/ 2>/dev/null || true
-	install -m 644 obj-x86_64-linux-gnu/cutefish/libcutefish_qmlpluginsplugin.so debian/libcutefish/usr/lib/x86_64-linux-gnu/ 2>/dev/null || true
-	install -m 644 obj-x86_64-linux-gnu/libcutefish_qmlplugins.so debian/libcutefish/usr/lib/x86_64-linux-gnu/ 2>/dev/null || true
+	# CMake的qt6_add_qml_module应该会自动安装QML插件
+	# 这里不需要手动安装，让CMake处理

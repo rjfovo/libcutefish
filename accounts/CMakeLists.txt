@@ -40,7 +40,7 @@ qt6_add_dbus_interface(
 qt6_add_qml_module(cutefishaccounts_qmlplugins
     URI Cutefish.Accounts
     VERSION 1.0
-    OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/cutefish/Accounts
+    OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Cutefish/Accounts
     QML_FILES
         # 如果有 QML 文件放这里，否则保持空
     SOURCES
@@ -55,6 +55,13 @@ target_link_libraries(cutefishaccounts_qmlplugins PRIVATE
     Qt6::Gui
     Qt6::DBus
     Qt6::Quick
+)
+
+# 设置rpath，确保插件库能找到安装的库
+set_target_properties(cutefishaccounts_qmlplugins PROPERTIES
+    INSTALL_RPATH "$ORIGIN/../../.."
+    BUILD_WITH_INSTALL_RPATH TRUE
+    SKIP_BUILD_RPATH FALSE
 )
 
 # Qt6 会自动安装 QML 插件，因此不再需要旧式 install()
