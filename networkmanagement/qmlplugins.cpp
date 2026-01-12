@@ -11,7 +11,7 @@
 #include "wifisettings.h"
 #include "configuration.h"
 
-#include <QQmlEngine>
+#include <QtQml>
 
 void QmlPlugins::registerTypes(const char* uri)
 {

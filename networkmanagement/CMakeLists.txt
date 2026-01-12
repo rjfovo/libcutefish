@@ -46,7 +46,7 @@ set(NETWORKMGR_SRCS
 
     qmlplugins.cpp
     qmlplugins.h
-    qml_register.cpp
+        qml_register.cpp
 )
 
 # ----------------------------
@@ -122,3 +122,9 @@ if (EXISTS ${CMAKE_CURRENT_BINARY_DIR}/Cutefish/NetworkManagement)
     install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Cutefish/NetworkManagement
             DESTINATION ${INSTALL_QMLDIR}/Cutefish)
 endif()
+
+# Ensure the built supporting shared library is installed so the QML plugin
+# can find its DT_NEEDED dependency (installed into the system library dir).
+include(GNUInstallDirs)
+install(TARGETS cutefishnm_qmlplugins
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
