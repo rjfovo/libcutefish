@@ -19,7 +19,6 @@ set(NETWORKMGR_SRCS
     mprisqt.h
     mprisrootadaptor.cpp
     mprisrootinterface.cpp
-    qmlplugins.cpp
 
     qtdbusextended/dbusextended.h
     qtdbusextended/dbusextendedabstractinterface.cpp
@@ -49,10 +48,10 @@ set(QML_FILES
 # ----------------------------
 # 创建 Qt6 QML 模块
 # ----------------------------
-qt6_add_qml_module(cutefishmpris_qmlplugins
-    URI Cutefish.Mpris
+qt_add_qml_module(cutefishmpris_qmlplugins
+    URI "cutefish.mpris"
     VERSION 1.0
-    OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Cutefish/Mpris
+    OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/cutefish/mpris
     SOURCES ${NETWORKMGR_SRCS}
     QML_FILES ${QML_FILES}
 )
@@ -77,5 +76,10 @@ set_target_properties(cutefishmpris_qmlplugins PROPERTIES
 # ----------------------------
 # 安装
 # ----------------------------
-# qt6_add_qml_module 会自动生成 qmldir 并安装到 QT6_INSTALL_QMLDIR
-# 不再需要手动 install()
+if (EXISTS ${CMAKE_CURRENT_BINARY_DIR}/cutefish/mpris)
+    if (NOT DEFINED INSTALL_QMLDIR OR INSTALL_QMLDIR STREQUAL "")
+        set(INSTALL_QMLDIR "${CMAKE_INSTALL_DATAROOTDIR}/qml")
+    endif()
+    install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/cutefish/mpris
+            DESTINATION ${INSTALL_QMLDIR}/cutefish)
+endif()

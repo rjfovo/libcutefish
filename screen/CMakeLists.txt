@@ -11,7 +11,6 @@ set(SCREEN_SRCS
     common/utils.cpp
     confighandler.cpp
     outputmodel.cpp
-    plugin.cpp
     screen.cpp
 )
 
@@ -36,10 +35,10 @@ find_package(KF6KIO REQUIRED)
 # ----------------------------
 # 创建 QML 模块
 # ----------------------------
-qt6_add_qml_module(cutefishscreen_qmlplugins
-    URI Cutefish.Screen
+qt_add_qml_module(cutefishscreen_qmlplugins
+    URI "cutefish.screen"
     VERSION 1.0
-    OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Cutefish/Screen
+    OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/cutefish/screen
     SOURCES ${SCREEN_SRCS}
     # 如果有 QML 文件，可在 QML_FILES 添加
     QML_FILES
@@ -69,5 +68,10 @@ set_target_properties(cutefishscreen_qmlplugins PROPERTIES
 # ----------------------------
 # 安装
 # ----------------------------
-# qt6_add_qml_module 会自动生成 qmldir 并安装到 QT6_INSTALL_QMLDIR
-# 不再需要手动 install()
+if (EXISTS ${CMAKE_CURRENT_BINARY_DIR}/cutefish/screen)
+    if (NOT DEFINED INSTALL_QMLDIR OR INSTALL_QMLDIR STREQUAL "")
+        set(INSTALL_QMLDIR "${CMAKE_INSTALL_DATAROOTDIR}/qml")
+    endif()
+    install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/cutefish/screen
+            DESTINATION ${INSTALL_QMLDIR}/cutefish)
+endif()

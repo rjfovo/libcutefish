@@ -40,10 +40,10 @@ set(QML_FILES
 # ----------------------------
 # 创建 QML 模块
 # ----------------------------
-qt6_add_qml_module(cutefishbluez_qmlplugins
-    URI Cutefish.Bluez
+qt_add_qml_module(cutefishbluez_qmlplugins
+    URI "cutefish.bluez"
     VERSION 1.0
-    OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Cutefish/Bluez
+    OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/cutefish/bluez
     SOURCES ${BLUEZQTEXTENSIONPLUGIN_SRCS}
     QML_FILES ${QML_FILES}
 )
@@ -68,5 +68,10 @@ set_target_properties(cutefishbluez_qmlplugins PROPERTIES
 # ----------------------------
 # 安装
 # ----------------------------
-# qt6_add_qml_module 会自动生成 qmldir 并安装到 QT6_INSTALL_QMLDIR
-# 不再需要手动 install()
+if (EXISTS ${CMAKE_CURRENT_BINARY_DIR}/cutefish/bluez)
+    if (NOT DEFINED INSTALL_QMLDIR OR INSTALL_QMLDIR STREQUAL "")
+        set(INSTALL_QMLDIR "${CMAKE_INSTALL_DATAROOTDIR}/qml")
+    endif()
+    install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/cutefish/bluez
+            DESTINATION ${INSTALL_QMLDIR}/cutefish)
+endif()

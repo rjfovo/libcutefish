@@ -40,7 +40,6 @@ set(AUDIO_SRCS
     canberracontext.cpp
     speakertest.cpp
     qml/listitemmenu.cpp
-    qml/plugin.cpp
     # qml/microphoneindicator.cpp
     # qml/volumeosd.cpp
     qml/volumefeedback.cpp
@@ -100,9 +99,9 @@ pkg_check_modules(LIBPULSE_MAINLOOP libpulse-mainloop-glib REQUIRED IMPORTED_TAR
 # Qt6 QML MODULE
 # ----------------------------
 qt6_add_qml_module(cutefishaudio_qmlplugins
-    URI Cutefish.Audio
+    URI "cutefish.audio"
     VERSION 1.0
-    OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Cutefish/Audio
+    OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/cutefish/audio
     QML_FILES ${QML_FILES}
     SOURCES ${AUDIO_SRCS}
 )
@@ -132,4 +131,11 @@ set_target_properties(cutefishaudio_qmlplugins PROPERTIES
 # ----------------------------
 # 安装（Qt6 qt6_add_qml_module 自动处理 qmldir & 安装路径）
 # ----------------------------
-# 不再需要手动 install()
+if (EXISTS ${CMAKE_CURRENT_BINARY_DIR}/cutefish/audio)
+    if (NOT DEFINED INSTALL_QMLDIR OR INSTALL_QMLDIR STREQUAL "")
+        set(INSTALL_QMLDIR "${CMAKE_INSTALL_DATAROOTDIR}/qml")
+    endif()
+    install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/cutefish/audio
+            DESTINATION ${INSTALL_QMLDIR}/cutefish)
+endif()
+

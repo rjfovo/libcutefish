@@ -43,10 +43,6 @@ set(NETWORKMGR_SRCS
 
     wifisettings.cpp
     wifisettings.h
-
-    qmlplugins.cpp
-    qmlplugins.h
-        qml_register.cpp
 )
 
 # ----------------------------
@@ -68,10 +64,10 @@ find_package(KF6ModemManagerQt REQUIRED)
 # ----------------------------
 # 创建 QML 模块
 # ----------------------------
-qt6_add_qml_module(cutefishnm_qmlplugins
-    URI Cutefish.NetworkManagement
+qt_add_qml_module(cutefishnm_qmlplugins
+    URI "cutefish.networkManagement"
     VERSION 1.0
-    OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Cutefish/NetworkManagement
+    OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/cutefish/networkmanagement
     SOURCES ${NETWORKMGR_SRCS}
     # 如果有 QML 文件，可在 QML_FILES 添加
     QML_FILES
@@ -115,12 +111,12 @@ set_target_properties(cutefishnm_qmlplugins PROPERTIES
 # qt6_add_qml_module 生成的 QML 文件正确收集到包中，
 # 在这种情况下显式安装生成目录以确保 QML 模块出现在
 # ${INSTALL_QMLDIR}/Cutefish/NetworkManagement
-if (EXISTS ${CMAKE_CURRENT_BINARY_DIR}/Cutefish/NetworkManagement)
+if (EXISTS ${CMAKE_CURRENT_BINARY_DIR}/cutefish/networkmanagement)
     if (NOT DEFINED INSTALL_QMLDIR OR INSTALL_QMLDIR STREQUAL "")
         set(INSTALL_QMLDIR "${CMAKE_INSTALL_DATAROOTDIR}/qml")
     endif()
-    install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Cutefish/NetworkManagement
-            DESTINATION ${INSTALL_QMLDIR}/Cutefish)
+    install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/cutefish/networkmanagement
+            DESTINATION ${INSTALL_QMLDIR}/cutefish)
 endif()
 
 # Ensure the built supporting shared library is installed so the QML plugin

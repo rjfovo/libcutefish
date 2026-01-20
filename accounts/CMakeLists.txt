@@ -16,7 +16,6 @@ set(ACCOUNTS_SRCS
     usersmodel.cpp
     usersmodel.h
     usersmodel_p.h
-    qmlplugins.cpp
 )
 
 # ----------------------------
@@ -38,9 +37,9 @@ qt6_add_dbus_interface(
 # Qt6 QML MODULE
 # ----------------------------
 qt6_add_qml_module(cutefishaccounts_qmlplugins
-    URI Cutefish.Accounts
+    URI "cutefish.accounts"
     VERSION 1.0
-    OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/Cutefish/Accounts
+    OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/cutefish/accounts
     QML_FILES
         # 如果有 QML 文件放这里，否则保持空
     SOURCES
@@ -65,3 +64,10 @@ set_target_properties(cutefishaccounts_qmlplugins PROPERTIES
 )
 
 # Qt6 会自动安装 QML 插件，因此不再需要旧式 install()
+if (EXISTS ${CMAKE_CURRENT_BINARY_DIR}/cutefish/accounts)
+    if (NOT DEFINED INSTALL_QMLDIR OR INSTALL_QMLDIR STREQUAL "")
+        set(INSTALL_QMLDIR "${CMAKE_INSTALL_DATAROOTDIR}/qml")
+    endif()
+    install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/cutefish/accounts
+            DESTINATION ${INSTALL_QMLDIR}/cutefish)
+endif()

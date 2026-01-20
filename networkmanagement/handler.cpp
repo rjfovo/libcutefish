@@ -48,7 +48,7 @@
 #include <sys/types.h>
 #include <pwd.h>
 
-#define AGENT_SERVICE "org.kde.kded5"
+#define AGENT_SERVICE "org.kde.kded6"
 #define AGENT_PATH "/modules/networkmanagement"
 #define AGENT_IFACE "org.kde.plasmanetworkmanagement"
 
@@ -864,4 +864,3 @@ void Handler::unlockRequiredChanged(MMModemLock modemLock)
     }
 }
 #endif
-

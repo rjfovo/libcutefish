@@ -8,7 +8,7 @@ Wallpaper::Wallpaper(QObject *parent)
 {
     if (m_interface.isValid()) {
         connect(&m_interface, SIGNAL(wallpaperChanged(QString)), this, SLOT(onPathChanged(QString)));
-        connect(&m_interface, SIGNAL(darkModeDimsWallpaerChanged()), this, SIGNAL(dimsWallpaperChanged()));
+        connect(&m_interface, SIGNAL(darkModeDimsWallpaperChanged()), this, SIGNAL(dimsWallpaperChanged()));
         connect(&m_interface, SIGNAL(backgroundTypeChanged()), this, SIGNAL(typeChanged()));
         connect(&m_interface, SIGNAL(backgroundColorChanged()), this, SIGNAL(colorChanged()));
     }
@@ -26,7 +26,7 @@ QString Wallpaper::path() const
 
 bool Wallpaper::dimsWallpaper() const
 {
-    return m_interface.property("darkModeDimsWallpaer").toBool();
+    return m_interface.property("darkModeDimsWallpaper").toBool();
 }
 
 QString Wallpaper::color() const

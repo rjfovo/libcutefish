@@ -10,5 +10,3 @@ override_dh_auto_configure:
 
 override_dh_auto_install:
 	dh_auto_install --destdir=debian/libcutefish/
-	# CMake的qt6_add_qml_module应该会自动安装QML插件
-	# 这里不需要手动安装，让CMake处理
