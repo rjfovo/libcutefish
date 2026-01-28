@@ -11,6 +11,7 @@
 
 #include <QHash>
 #include <QQmlListProperty>
+#include <QtQml/qqml.h>
 
 #include <BluezQt/Manager>
 
@@ -20,6 +21,7 @@ class DeclarativeAdapter;
 class DeclarativeManager : public BluezQt::Manager
 {
     Q_OBJECT
+    QML_ELEMENT
     Q_PROPERTY(DeclarativeAdapter *usableAdapter READ usableAdapter NOTIFY usableAdapterChanged)
     Q_PROPERTY(QQmlListProperty<DeclarativeAdapter> adapters READ declarativeAdapters NOTIFY adaptersChanged)
     Q_PROPERTY(QQmlListProperty<DeclarativeDevice> devices READ declarativeDevices NOTIFY devicesChanged)

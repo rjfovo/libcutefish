@@ -22,13 +22,16 @@
 #define PLASMA_NM_ENUMS_H
 
 #include <QObject>
+#include <QtQml/qqmlregistration.h>
 
 class Enums : public QObject
 {
-Q_OBJECT
-Q_ENUMS(ConnectionStatus)
-Q_ENUMS(ConnectionType)
-Q_ENUMS(SecurityType)
+    Q_OBJECT
+    QML_ELEMENT
+    QML_SINGLETON
+    Q_ENUMS(ConnectionStatus)
+    Q_ENUMS(ConnectionType)
+    Q_ENUMS(SecurityType)
 
 public:
     explicit Enums(QObject* parent = nullptr);

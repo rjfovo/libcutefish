@@ -39,9 +39,12 @@
 
 Q_DECLARE_LOGGING_CATEGORY(gLcNm)
 
+#include <QQmlEngine>
+
 class NETWORKMANAGER_EXPORT NetworkModel : public QAbstractListModel
 {
     Q_OBJECT
+    QML_ELEMENT
 
 public:
     explicit NetworkModel(QObject *parent = nullptr);

@@ -21,12 +21,29 @@
 #define BLUETOOTHMANAGER_H
 
 #include <QObject>
+#include <QtQml/QtQml>
+#include <QMetaType>
 #include <BluezQt/Manager>
 #include "bluetoothagent.h"
+
+// Forward declaration for BluezQt::Request (already declared in bluetoothagent.h)
+namespace BluezQt {
+    template<typename T>
+    class Request;
+    class PendingCall;
+    class InitManagerJob;
+}
+
+// Qt6 requires opaque pointer declaration for incomplete types
+// These are already declared in bluetoothagent.h, but we need to ensure they're visible
+Q_DECLARE_OPAQUE_POINTER(BluezQt::PendingCall*)
+Q_DECLARE_OPAQUE_POINTER(BluezQt::InitManagerJob*)
 
 class BluetoothManager : public QObject
 {
     Q_OBJECT
+    QML_ELEMENT
+    QML_NAMED_ELEMENT(BluetoothManager)
 
 public:
     explicit BluetoothManager(QObject *parent = nullptr);

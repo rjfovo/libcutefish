@@ -66,12 +66,21 @@ void BluezQtExtensionPlugin::registerTypes(const char *uri)
 {
     using namespace BluezQt;
 
-    Q_ASSERT(QLatin1String(uri) == QLatin1String("Cutefish.Bluez"));
+    Q_ASSERT(QLatin1String(uri) == QLatin1String("cutefish.bluez"));
 
+    // 在 Qt6 中，使用 QML_ELEMENT 宏的类会自动注册
+    // 我们只需要注册那些没有使用 QML_ELEMENT 的类
+    
+    // 注册单例
     qmlRegisterSingletonType<DeclarativeManager>(uri, 1, 0, "Manager", manager_singleton);
-    qmlRegisterType<DeclarativeDevicesModel>(uri, 1, 0, "DevicesModelPrivate");
-    qmlRegisterType<BluetoothAgent>(uri, 1, 0, "BluetoothAgent");
-    qmlRegisterType<BluetoothManager>(uri, 1, 0, "BluetoothManager");
+    
+    // 注册其他类型（这些类型应该使用 QML_ELEMENT 宏，但为了兼容性保留）
+    // DeclarativeDevicesModel 现在使用 QML_ELEMENT 宏，不需要手动注册
+    // qmlRegisterType<DeclarativeDevicesModel>(uri, 1, 0, "DevicesModelPrivate");
+    
+    // BluetoothAgent 和 BluetoothManager 现在使用 QML_ELEMENT 宏，不需要手动注册
+    // qmlRegisterType<BluetoothAgent>(uri, 1, 0, "BluetoothAgent");
+    // qmlRegisterType<BluetoothManager>(uri, 1, 0, "BluetoothManager");
 
     qmlRegisterUncreatableType<DeclarativeAdapter>(uri, 1, 0, "Adapter", QStringLiteral("Adapter cannot be created"));
     // qmlRegisterUncreatableType<DeclarativeBattery>(uri, 1, 0, "Battery", QStringLiteral("Battery cannot be created"));

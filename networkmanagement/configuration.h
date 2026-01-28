@@ -22,11 +22,14 @@
 #define PLASMA_NM_CONFIGURATION_H
 
 #include <QObject>
+#include <QtQml/QtQml>
 
 #include <NetworkManagerQt/Manager>
 
 class Q_DECL_EXPORT Configuration : public QObject
 {
+    Q_OBJECT
+    QML_ELEMENT
     Q_PROPERTY(bool unlockModemOnDetection READ unlockModemOnDetection WRITE setUnlockModemOnDetection)
     Q_PROPERTY(bool manageVirtualConnections READ manageVirtualConnections WRITE setManageVirtualConnections)
     Q_PROPERTY(bool airplaneModeEnabled READ airplaneModeEnabled WRITE setAirplaneModeEnabled)
@@ -36,7 +39,6 @@ class Q_DECL_EXPORT Configuration : public QObject
 
     //Readonly constant property, as this value should only be set by the platform
     Q_PROPERTY(bool showPasswordDialog READ showPasswordDialog CONSTANT)
-    Q_OBJECT
 
 public:
     Configuration();

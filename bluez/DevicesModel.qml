@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: LGPL-2.1-only OR LGPL-3.0-only OR LicenseRef-KDE-Accepted-LGPL
  */
 
-import Cutefish.Bluez 1.0 as Bluez
+import cutefish.bluez 1.0 as Bluez
 
 Bluez.DevicesModelPrivate {
     manager: Bluez.Manager

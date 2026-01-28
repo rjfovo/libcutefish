@@ -3,6 +3,7 @@
 #include <QObject>
 #include <memory>
 #include <kscreen/getconfigoperation.h>
+#include <QtQml/qqmlregistration.h>
 
 #include "confighandler.h"
 #include "outputmodel.h"
@@ -12,6 +13,7 @@ class OutputModel;
 class Screen : public QObject
 {
     Q_OBJECT
+    QML_ELEMENT
     Q_PROPERTY(OutputModel *outputModel READ outputModel NOTIFY outputModelChanged)
 
 public:

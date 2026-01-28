@@ -10,6 +10,7 @@
 #define DECLARATIVEDEVICESMODEL_H
 
 #include <QSortFilterProxyModel>
+#include <QtQml/qqml.h>
 
 #include "declarativemanager.h"
 
@@ -18,6 +19,7 @@
 class DeclarativeDevicesModel : public QSortFilterProxyModel
 {
     Q_OBJECT
+    QML_NAMED_ELEMENT(DevicesModelPrivate)
     Q_PROPERTY(DeclarativeManager *manager READ manager WRITE setManager)
 
 public:

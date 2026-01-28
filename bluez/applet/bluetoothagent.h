@@ -10,6 +10,17 @@
 
 #include <BluezQt/Agent>
 
+// Forward declaration for BluezQt::Request
+namespace BluezQt {
+    template<typename T>
+    class Request;
+}
+
+// Qt6 requires opaque pointer declaration for incomplete types
+Q_DECLARE_OPAQUE_POINTER(BluezQt::Request<>)
+Q_DECLARE_OPAQUE_POINTER(BluezQt::Request<QString>)
+Q_DECLARE_OPAQUE_POINTER(BluezQt::Request<quint32>)
+
 class BluetoothAgent : public BluezQt::Agent
 {
     Q_OBJECT

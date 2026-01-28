@@ -9,10 +9,13 @@
 
 #include <BluezQt/DevicesModel>
 #include <QSortFilterProxyModel>
+#include <QtQml/QtQml>
 
 class DevicesProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
+    QML_ELEMENT
+    QML_NAMED_ELEMENT(DevicesProxyModel)
     Q_PROPERTY(QString connectedName READ connectedName NOTIFY connectedNameChanged)
     Q_PROPERTY(QString connectedAdress READ connectedAdress NOTIFY connectedAdressChanged)
 

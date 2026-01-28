@@ -24,12 +24,14 @@
 
 #include <networkmanager_export.h>
 #include <QSortFilterProxyModel>
+#include <QtQml/qqmlregistration.h>
 
 #include "networkmodelitem.h"
 
 class NETWORKMANAGER_EXPORT AppletProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
+    QML_ELEMENT
     Q_PROPERTY(Type type READ type WRITE setType NOTIFY typeChanged)
     Q_PROPERTY(QAbstractItemModel * sourceModel READ sourceModel WRITE setSourceModel)
 

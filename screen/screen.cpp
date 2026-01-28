@@ -10,7 +10,7 @@ Screen::Screen(QObject *parent)
     : QObject(parent)
 {
     // Qt6 兼容性修复：qmlRegisterType 需要指定模块 URI 和版本号
-    qmlRegisterType<OutputModel>("Cutefish.Screen", 1, 0, "OutputModel");
+    qmlRegisterType<OutputModel>("cutefish.screen", 1, 0, "OutputModel");
     load();
 }
 

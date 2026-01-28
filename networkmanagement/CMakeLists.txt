@@ -65,7 +65,7 @@ find_package(KF6ModemManagerQt REQUIRED)
 # 创建 QML 模块
 # ----------------------------
 qt_add_qml_module(cutefishnm_qmlplugins
-    URI "cutefish.networkManagement"
+    URI "cutefish.networkmanagement"
     VERSION 1.0
     OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/cutefish/networkmanagement
     SOURCES ${NETWORKMGR_SRCS}

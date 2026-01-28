@@ -48,6 +48,12 @@ qt_add_qml_module(cutefishbluez_qmlplugins
     QML_FILES ${QML_FILES}
 )
 
+# 添加包含路径
+target_include_directories(cutefishbluez_qmlplugins PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/applet
+)
+
 # ----------------------------
 # 链接库
 # ----------------------------

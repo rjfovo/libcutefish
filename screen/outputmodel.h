@@ -23,12 +23,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <QAbstractListModel>
 #include <QPoint>
+#include <QtQml/qqmlregistration.h>
 
 class ConfigHandler;
 
 class OutputModel : public QAbstractListModel
 {
     Q_OBJECT
+    QML_ELEMENT
 
 public:
     enum OutputRoles {
