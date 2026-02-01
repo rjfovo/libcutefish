@@ -55,3 +55,5 @@ install(FILES
     ${CMAKE_CURRENT_BINARY_DIR}/cutefish/plugins.qmltypes
     DESTINATION ${INSTALL_QMLDIR}/cutefish
 )
+
+# 注意：这是一个虚拟模块，没有实际的库目标需要安装

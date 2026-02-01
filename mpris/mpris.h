@@ -30,6 +30,7 @@
 
 #include <QtCore/QObject>
 #include <QtCore/QString>
+#include <QtQml/qqml.h>
 
 class QQmlEngine;
 class QJSEngine;
@@ -37,6 +38,8 @@ class QJSEngine;
 class MPRIS_QT_EXPORT Mpris : public QObject
 {
     Q_OBJECT
+    QML_ELEMENT
+    QML_NAMED_ELEMENT(Mpris)
 
     Q_ENUMS(PlaybackStatus LoopStatus Metadata)
 

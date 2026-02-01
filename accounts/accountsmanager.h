@@ -38,6 +38,7 @@ class AccountsManagerPrivate;
 class AccountsManager : public QObject
 {
     Q_OBJECT
+    QML_NAMED_ELEMENT(AccountsManager)
 public:
     explicit AccountsManager(const QDBusConnection &bus = QDBusConnection::systemBus(),
                              QObject *parent = nullptr);

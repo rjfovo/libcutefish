@@ -9,6 +9,7 @@
 #define PULSEAUDIO_H
 
 #include <QAbstractListModel>
+#include <QtQml/qqmlregistration.h>
 
 #include "maps.h"
 #include "sink.h"
@@ -69,6 +70,7 @@ private:
 class CardModel : public AbstractModel
 {
     Q_OBJECT
+    QML_ELEMENT
 public:
     explicit CardModel(QObject *parent = nullptr);
 };
@@ -76,6 +78,7 @@ public:
 class SinkModel : public AbstractModel
 {
     Q_OBJECT
+    QML_ELEMENT
     Q_PROPERTY(QPulseAudio::Sink *defaultSink READ defaultSink NOTIFY defaultSinkChanged)
     Q_PROPERTY(QPulseAudio::Sink *preferredSink READ preferredSink NOTIFY preferredSinkChanged)
 public:
@@ -105,6 +108,7 @@ private:
 class SinkInputModel : public AbstractModel
 {
     Q_OBJECT
+    QML_ELEMENT
 public:
     explicit SinkInputModel(QObject *parent = nullptr);
 };
@@ -112,6 +116,7 @@ public:
 class SourceModel : public AbstractModel
 {
     Q_OBJECT
+    QML_ELEMENT
     Q_PROPERTY(QPulseAudio::Source *defaultSource READ defaultSource NOTIFY defaultSourceChanged)
 public:
     enum ItemRole {
@@ -130,6 +135,7 @@ Q_SIGNALS:
 class SourceOutputModel : public AbstractModel
 {
     Q_OBJECT
+    QML_ELEMENT
 public:
     explicit SourceOutputModel(QObject *parent = nullptr);
 };
@@ -137,6 +143,7 @@ public:
 class StreamRestoreModel : public AbstractModel
 {
     Q_OBJECT
+    QML_ELEMENT
 public:
     explicit StreamRestoreModel(QObject *parent = nullptr);
 };
@@ -144,6 +151,7 @@ public:
 class ModuleModel : public AbstractModel
 {
     Q_OBJECT
+    QML_ELEMENT
 public:
     explicit ModuleModel(QObject *parent = nullptr);
 };

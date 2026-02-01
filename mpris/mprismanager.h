@@ -1,4 +1,3 @@
-// -*- c++ -*-
 
 /*!
  *
@@ -41,11 +40,14 @@
 #include <QtCore/QString>
 #include <QtCore/QStringList>
 #include <QtCore/QVariant>
+#include <QtQml/qqml.h>
 
 class QSignalMapper;
 class MPRIS_QT_EXPORT MprisManager : public QObject
 {
     Q_OBJECT
+    QML_ELEMENT
+    QML_NAMED_ELEMENT(MprisManager)
 
     Q_PROPERTY(bool singleService READ singleService WRITE setSingleService NOTIFY singleServiceChanged)
     Q_PROPERTY(QString currentService READ currentService WRITE setCurrentService NOTIFY currentServiceChanged)

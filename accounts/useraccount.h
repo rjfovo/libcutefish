@@ -26,6 +26,7 @@
 #include <QtCore/QObject>
 #include <QtCore/QString>
 #include <QtDBus/QDBusConnection>
+#include <QtQml/qqmlregistration.h>
 
 namespace QtAccountsService {
 
@@ -36,6 +37,7 @@ class UserAccountPrivate;
 class UserAccount : public QObject
 {
     Q_OBJECT
+    QML_NAMED_ELEMENT(UserAccount)
     Q_PROPERTY(qlonglong userId READ userId WRITE setUserId NOTIFY userIdChanged)
     Q_PROPERTY(qlonglong groupId READ groupId NOTIFY groupIdChanged)
     Q_PROPERTY(

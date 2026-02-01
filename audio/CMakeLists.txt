@@ -139,3 +139,10 @@ if (EXISTS ${CMAKE_CURRENT_BINARY_DIR}/cutefish/audio)
             DESTINATION ${INSTALL_QMLDIR}/cutefish)
 endif()
 
+
+# 安装主库文件到系统库目录
+install(TARGETS cutefishaudio_qmlplugins
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+)

@@ -81,3 +81,10 @@ if (EXISTS ${CMAKE_CURRENT_BINARY_DIR}/cutefish/bluez)
     install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/cutefish/bluez
             DESTINATION ${INSTALL_QMLDIR}/cutefish)
 endif()
+
+# 安装主库文件到系统库目录
+install(TARGETS cutefishbluez_qmlplugins
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+)

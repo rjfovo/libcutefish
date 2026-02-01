@@ -83,3 +83,10 @@ if (EXISTS ${CMAKE_CURRENT_BINARY_DIR}/cutefish/mpris)
     install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/cutefish/mpris
             DESTINATION ${INSTALL_QMLDIR}/cutefish)
 endif()
+
+# 安装主库文件到系统库目录
+install(TARGETS cutefishmpris_qmlplugins
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+)
