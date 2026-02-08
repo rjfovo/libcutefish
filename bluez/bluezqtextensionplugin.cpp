@@ -76,7 +76,8 @@ void BluezQtExtensionPlugin::registerTypes(const char *uri)
     
     // 注册其他类型（这些类型应该使用 QML_ELEMENT 宏，但为了兼容性保留）
     // DeclarativeDevicesModel 现在使用 QML_ELEMENT 宏，不需要手动注册
-    // qmlRegisterType<DeclarativeDevicesModel>(uri, 1, 0, "DevicesModelPrivate");
+    // 但在某些情况下，仍然需要手动注册以确保正确加载
+    qmlRegisterType<DeclarativeDevicesModel>(uri, 1, 0, "DevicesModelPrivate");
     
     // BluetoothAgent 和 BluetoothManager 现在使用 QML_ELEMENT 宏，不需要手动注册
     // qmlRegisterType<BluetoothAgent>(uri, 1, 0, "BluetoothAgent");

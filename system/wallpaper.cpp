@@ -4,31 +4,61 @@
 
 Wallpaper::Wallpaper(QObject *parent)
     : QObject(parent)
-    , m_interface("com.cutefish.Settings",
-                  "/Theme", "com.cutefish.Theme",
-                  QDBusConnection::sessionBus(), this)
 {
-    if (m_interface.isValid()) {
-        connect(&m_interface, SIGNAL(wallpaperChanged(QString)), this, SLOT(onPathChanged(QString)));
-        connect(&m_interface, SIGNAL(darkModeDimsWallpaperChanged()), this, SIGNAL(dimsWallpaperChanged()));
-        connect(&m_interface, SIGNAL(backgroundTypeChanged()), this, SIGNAL(typeChanged()));
-        connect(&m_interface, SIGNAL(backgroundColorChanged()), this, SIGNAL(colorChanged()));
+    // Connect to DBus name owner changed so we can react if the settings service appears later
+    QDBusConnection::sessionBus().connect(QStringLiteral("org.freedesktop.DBus"),
+                                          QStringLiteral("/org/freedesktop/DBus"),
+                                          QStringLiteral("org.freedesktop.DBus"),
+                                          QStringLiteral("NameOwnerChanged"),
+                                          this,
+                                          SLOT(onNameOwnerChanged(QString,QString,QString)));
+
+    createInterface();
+}
+
+Wallpaper::~Wallpaper()
+{
+    disconnectInterface();
+}
+
+void Wallpaper::createInterface()
+{
+    m_interface.reset(new QDBusInterface("com.cutefish.Settings",
+                                         "/Theme", "com.cutefish.Theme",
+                                         QDBusConnection::sessionBus(), this));
+    
+    if (m_interface && m_interface->isValid()) {
+        connect(m_interface.data(), SIGNAL(wallpaperChanged(QString)), this, SLOT(onPathChanged(QString)));
+        connect(m_interface.data(), SIGNAL(darkModeDimsWallpaperChanged()), this, SIGNAL(dimsWallpaperChanged()));
+        connect(m_interface.data(), SIGNAL(backgroundTypeChanged()), this, SIGNAL(typeChanged()));
+        connect(m_interface.data(), SIGNAL(backgroundColorChanged()), this, SIGNAL(colorChanged()));
     }
+}
+
+void Wallpaper::disconnectInterface()
+{
+    if (m_interface && m_interface->isValid()) {
+        disconnect(m_interface.data(), SIGNAL(wallpaperChanged(QString)), this, SLOT(onPathChanged(QString)));
+        disconnect(m_interface.data(), SIGNAL(darkModeDimsWallpaperChanged()), this, SIGNAL(dimsWallpaperChanged()));
+        disconnect(m_interface.data(), SIGNAL(backgroundTypeChanged()), this, SIGNAL(typeChanged()));
+        disconnect(m_interface.data(), SIGNAL(backgroundColorChanged()), this, SIGNAL(colorChanged()));
+    }
+    m_interface.reset();
 }
 
 int Wallpaper::type() const
 {
-    if (!m_interface.isValid())
-        return 0;
-    return m_interface.property("backgroundType").toInt();
+    if (m_interface && m_interface->isValid())
+        return m_interface->property("backgroundType").toInt();
+    return 0;
 }
 
 QString Wallpaper::path() const
 {
     QString wallpaperPath;
     
-    if (m_interface.isValid()) {
-        wallpaperPath = m_interface.property("wallpaper").toString();
+    if (m_interface && m_interface->isValid()) {
+        wallpaperPath = m_interface->property("wallpaper").toString();
     }
     
     // 如果从 D-Bus 获取的路径为空，或者 D-Bus 接口无效，使用默认壁纸
@@ -61,16 +91,16 @@ QString Wallpaper::path() const
 
 bool Wallpaper::dimsWallpaper() const
 {
-    if (!m_interface.isValid())
-        return false;
-    return m_interface.property("darkModeDimsWallpaper").toBool();
+    if (m_interface && m_interface->isValid())
+        return m_interface->property("darkModeDimsWallpaper").toBool();
+    return false;
 }
 
 QString Wallpaper::color() const
 {
-    if (!m_interface.isValid())
-        return "#2B8ADA";
-    return m_interface.property("backgroundColor").toString();
+    if (m_interface && m_interface->isValid())
+        return m_interface->property("backgroundColor").toString();
+    return "#2B8ADA";
 }
 
 void Wallpaper::onPathChanged(QString path)
@@ -78,4 +108,24 @@ void Wallpaper::onPathChanged(QString path)
     Q_UNUSED(path);
 
     emit pathChanged();
+}
+
+void Wallpaper::onNameOwnerChanged(const QString &name, const QString &oldOwner, const QString &newOwner)
+{
+    Q_UNUSED(oldOwner);
+    Q_UNUSED(newOwner);
+
+    if (name != QLatin1String("com.cutefish.Settings"))
+        return;
+
+    // Reinitialize interface and emit change if available
+    disconnectInterface();
+    createInterface();
+    
+    if (m_interface && m_interface->isValid()) {
+        emit pathChanged();
+        emit dimsWallpaperChanged();
+        emit typeChanged();
+        emit colorChanged();
+    }
 }

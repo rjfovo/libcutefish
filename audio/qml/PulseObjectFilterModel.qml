@@ -1,4 +1,4 @@
-import cutefish.Audio 1.0
+import cutefish.audio 1.0
 
 SortFilterModel {
     property var filters: []

@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QDBusInterface>
 #include <QtQml/qqmlregistration.h>
+#include <QScopedPointer>
 
 class Wallpaper : public QObject
 {
@@ -16,6 +17,7 @@ class Wallpaper : public QObject
 
 public:
     explicit Wallpaper(QObject *parent = nullptr);
+    ~Wallpaper();
 
     int type() const;
 
@@ -32,9 +34,13 @@ signals:
 
 private slots:
     void onPathChanged(QString path);
+    void onNameOwnerChanged(const QString &name, const QString &oldOwner, const QString &newOwner);
 
 private:
-    QDBusInterface m_interface;
+    void createInterface();
+    void disconnectInterface();
+    
+    QScopedPointer<QDBusInterface> m_interface;
     QString m_wallpaper;
 };
 

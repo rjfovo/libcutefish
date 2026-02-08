@@ -33,7 +33,6 @@
 #include <QDBusConnectionInterface>
 #include <QRegularExpression>  // 添加这个头文件
 
-#include <QtCore/QSignalMapper>
 
 static const QString mprisNameSpace = QStringLiteral("org.mpris.MediaPlayer2.*");
 static const QString dBusService = QStringLiteral("org.freedesktop.DBus");
@@ -54,7 +53,6 @@ static inline QDBusConnection getDBusConnection()
 MprisManager::MprisManager(QObject *parent)
     : QObject(parent)
     , m_singleService(false)
-    , m_playbackStatusMapper(new QSignalMapper(this))
 {
     QDBusConnection connection = getDBusConnection();
 
@@ -82,6 +80,8 @@ MprisManager::MprisManager(QObject *parent)
 
 MprisManager::~MprisManager()
 {
+    // 清理控制器映射
+    m_controllerServiceMap.clear();
 }
 
 // Mpris2 Root Interface
@@ -409,9 +409,13 @@ void MprisManager::onServiceAppeared(const QString &service)
             controller = QSharedPointer<MprisController>(new MprisController(service, getDBusConnection(), this));
         }
 
-        connect(controller.data(), SIGNAL(playbackStatusChanged()), m_playbackStatusMapper, SLOT(map()));
-        m_playbackStatusMapper->setMapping(controller.data(), controller->service());
-        connect(m_playbackStatusMapper, SIGNAL(mapped(QString)), this, SLOT(onAvailableControllerPlaybackStatusChanged(QString)));
+        // 使用 lambda 函数替代 QSignalMapper
+        connect(controller.data(), &MprisController::playbackStatusChanged, this, [this, controller]() {
+            onAvailableControllerPlaybackStatusChanged(controller->service());
+        });
+        
+        // 保存控制器到服务名的映射
+        m_controllerServiceMap[controller.data()] = controller->service();
     }
 
     if (m_currentController.isNull()) {

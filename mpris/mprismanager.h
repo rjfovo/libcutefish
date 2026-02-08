@@ -42,7 +42,6 @@
 #include <QtCore/QVariant>
 #include <QtQml/qqml.h>
 
-class QSignalMapper;
 class MPRIS_QT_EXPORT MprisManager : public QObject
 {
     Q_OBJECT
@@ -217,7 +216,7 @@ private:
     QSharedPointer<MprisController> m_currentController;
     QList< QSharedPointer<MprisController> > m_availableControllers;
     QList< QSharedPointer<MprisController> > m_otherPlayingControllers;
-    QSignalMapper *m_playbackStatusMapper;
+    QMap<MprisController*, QString> m_controllerServiceMap;
 };
 
 #endif /* MPRISMANAGER_H */
