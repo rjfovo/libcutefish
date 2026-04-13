@@ -64,6 +64,12 @@ if (EXISTS ${CMAKE_CURRENT_BINARY_DIR}/cutefish/system)
             DESTINATION ${INSTALL_QMLDIR}/cutefish)
 endif()
 
+# 设置库版本
+set_target_properties(cutefishsystem_qmlplugins PROPERTIES
+    VERSION 1.0
+    SOVERSION 1
+)
+
 # 安装主库文件到系统库目录
 install(TARGETS cutefishsystem_qmlplugins
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
